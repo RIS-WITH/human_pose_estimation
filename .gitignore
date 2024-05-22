@@ -21,14 +21,6 @@ devel_isolated/
 /cfg/cpp/
 /cfg/*.py
 
-# Ignore generated docs
-*.dox
-*.wikidoc
-
-# eclipse stuff
-.project
-.cproject
-
 # qcreator stuff
 CMakeLists.txt.user
 
@@ -38,14 +30,21 @@ srv/_*.py
 qtcreator-*
 *.user
 
-/planning/cfg
-/planning/docs
-/planning/src
-
-*~
-
-# Emacs
-.#*
-
 # Catkin custom files
 CATKIN_IGNORE
+
+# Data files
+/data/*
+/models/*
+
+# VsCode files
+settings.json
+launch.json
+
+# CMake
+*.cmake
+*.bin
+build/
+
+# Rosbag
+*.bag
