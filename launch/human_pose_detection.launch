@@ -1,5 +1,0 @@
-<launch>
-
-    <node name="human_pose_node" pkg="human_pose_detection" type="yolo8_ros.py" output="screen" />
-
-</launch>
