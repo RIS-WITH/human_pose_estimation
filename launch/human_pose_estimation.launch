@@ -1,0 +1,5 @@
+<launch>
+
+    <node name="human_pose_node" pkg="human_pose_estimation" type="yolo8_cv.py" output="screen" />
+
+</launch>

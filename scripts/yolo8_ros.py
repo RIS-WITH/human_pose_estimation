@@ -2,10 +2,10 @@
 
 import rospy
 
-from human_pose_detection.Detection.DetectionModule import DetectionModule
-from human_pose_detection.Camera.RosL515Module import RosL515Module
-from human_pose_detection.Model.Yolov8Module import Yolov8Module
-from human_pose_detection.Visualization.RosVisualizationModule import RosVisualizationModule
+from human_pose_estimation.Detection.DetectionModule import DetectionModule
+from human_pose_estimation.Camera.RosL515Module import RosL515Module
+from human_pose_estimation.Model.Yolov8Module import Yolov8Module
+from human_pose_estimation.Visualization.RosVisualizationModule import RosVisualizationModule
 
 camera = None
 detection = None

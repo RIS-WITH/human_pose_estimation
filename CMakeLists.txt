@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(human_pose_detection)
+project(human_pose_estimation)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -37,7 +37,7 @@ catkin_python_setup()
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES human_pose_detection
+#  LIBRARIES human_pose_estimation
 #  CATKIN_DEPENDS realsense2_camera rospy std_msgs
 #  DEPENDS system_lib
 )
