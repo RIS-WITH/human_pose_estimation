@@ -17,6 +17,7 @@ class RosVisualizationModule():
         self.pub_3dkp = rospy.Publisher('/3d_keypoints', MarkerArray, queue_size=1)
         self.pub_2d_skeletons = rospy.Publisher('/rgb_w_skeletons', Image, queue_size=1)
         self.pub_3d_skeletons = rospy.Publisher('/3d_skeletons', MarkerArray, queue_size=1)
+        self.pub_3d_clusters = rospy.Publisher('/3d_clusters', MarkerArray, queue_size=1)
 
         self.bridge = CvBridge()
         self.kp_table_ = kp_table
@@ -131,3 +132,36 @@ class RosVisualizationModule():
             marker_array.markers.append(marker)
 
         self.pub_3d_skeletons.publish(marker_array)
+
+    def publishClusters3D(self, skeleton_clusters):
+        cluster_array = MarkerArray()
+
+        for skeleton_cluster in skeleton_clusters:
+            r,g,b = 1,1,1
+            #r,g,b = np.random.random(), np.random.random(), np.random.random()
+
+            marker = Marker()
+            marker.header.frame_id = str("camera_color_optical_frame") #"camera_color_optical_frame"
+            marker.id = int(0)
+
+            marker.type = Marker.POINTS
+            marker.action = Marker.ADD
+
+            marker.color = ColorRGBA(r, g, b, 1.0)
+            marker.scale = Vector3(0.02, 0.02, 0.02)
+            marker.pose.position = Point(0,0,0)
+            marker.pose.orientation = Quaternion(0,0,0,1)
+            
+            for keypoint in skeleton_cluster.keypoints:
+                # Add clusters value 
+                for cluster_kp in keypoint.candidates_:
+                    # print(cluster_kp.label_)
+                    if(cluster_kp.is_null_ == True):
+                        continue
+                    else:
+                        point = Point(cluster_kp.x_, cluster_kp.y_, cluster_kp.z_)
+                        marker.points.append(point)
+
+                    cluster_array.markers.append(marker)
+
+            self.pub_3d_clusters.publish(cluster_array)

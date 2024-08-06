@@ -22,12 +22,15 @@ class CvL515Module():
 
         self.setCameraParams(camera_path)
 
+        self.min_distance_depth_ = 0.25
+        self.max_distance_depth_ = 9.0
+
     def setCameraParams(self, camera_path):
         self.color_intrinsic = self.setup_intrinsic(camera_path + str("color_intrinsic_l515") + ".npy")
         self.depth_intrinsic = self.setup_intrinsic(camera_path + str("depth_intrinsic_l515") + ".npy")
 
     def getImages(self):
-        if(os.path.isfile( self.data_path + "_rgb.png") == True):
+        if(os.path.isfile(self.data_path + "_rgb.png") == True):
             image_rgb_name = self.data_path + "_rgb.png"
             image_depth_name = self.data_path + "_depth.png"
         elif(os.path.isdir(self.data_path) == True):
@@ -36,9 +39,14 @@ class CvL515Module():
             # Increase img counter
             self.cpt_img += 1
 
-        frame_rgb = cv2.imread(image_rgb_name, cv2.IMREAD_UNCHANGED)
+        image_rgb = cv2.imread(image_rgb_name, cv2.IMREAD_UNCHANGED)
+
         # === cv2.IMREAD_ANYDEPTH | cv2.IMREAD_UNCHANGED required because implicit conversion from int16 to int8
         frame_depth = cv2.imread(image_depth_name , cv2.IMREAD_ANYDEPTH | cv2.IMREAD_UNCHANGED)
+        if(image_rgb is not None):
+            frame_rgb = cv2.cvtColor(image_rgb, cv2.COLOR_BGR2RGB)
+        else:
+            frame_rgb = None
 
         return [frame_rgb, frame_depth]
     

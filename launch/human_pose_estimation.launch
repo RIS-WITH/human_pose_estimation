@@ -1,5 +1,5 @@
 <launch>
-
-    <node name="human_pose_node" pkg="human_pose_estimation" type="yolo8_cv.py" output="screen" />
+    <!-- ros_to_numpy_images -->
+    <node name="human_pose_node" pkg="human_pose_estimation" type="yolo8_ros.py" output="screen" />
 
 </launch>

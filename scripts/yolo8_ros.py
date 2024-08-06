@@ -11,19 +11,19 @@ camera = None
 detection = None
 visu = None
 
-def callback(frame_id, image_rgb, image_depth):
+def callback(frame_id, image_rgb, image_depth, cpt):
     if detection is not None:
         # Compute keypoints detection and 2d skeletons
         skeletons2d = detection.detect(frame_id, image_rgb)
 
-        visu.publishKeypoint2D(image_rgb, skeletons2d)
-        visu.publishSkeleton2D(image_rgb, skeletons2d)
+        # visu.publishKeypoint2D(image_rgb, skeletons2d)
+        # visu.publishSkeleton2D(image_rgb, skeletons2d)
 
         # Project 2d skeltons into 3d skeletons
         skeletons3d = detection.project(skeletons2d, image_depth)
         
-        visu.publishKeypoint3D(skeletons3d)
-        visu.publishSkeleton3D(skeletons3d)
+        # visu.publishKeypoint3D(skeletons3d)
+        # visu.publishSkeleton3D(skeletons3d)
     
 if __name__ == '__main__':
 

@@ -127,13 +127,19 @@ class Keypoint3D(Keypoint2D):
      def __str__(self):
         return "Keypoint3D: label: {0} conf: {1} (x:{2},y:{3},z:{4}) is_null :{5} ".format(self.label_, self.confidence_, self.x_, self.y_, self.z_, self.is_null_)
      
-class KeypointCandidates(Keypoint):
-    def __init__(self, label, conf, nb_neighboors):
-        self.label_ = label
-        self.confidence_ = conf
-        self.is_null_ = False
-        self.neighboors = np.empty(nb_neighboors, dtype = Keypoint3D)
+class KeypointCandidates(Keypoint3D):
+    def __init__(self, label, conf, x, y, z):
+        super().__init__(label, conf, x, y, z)
+        self.candidates_ = [] # np.empty(nb_neighboors, dtype = Keypoint3D)
 
+class Skeleton3dClusterized(Skeleton):
+    def __init__(self, id, frame_id):
+        super().__init__(id, frame_id)
+
+    def addKeypoint(self, keypoint):
+        self.keypoints.append(keypoint)
+
+    
 # class SkeletonCandidates(Skeleton):
 #     def __init__(self, id, frame_id):
 #         self.skeleton_id_ = id

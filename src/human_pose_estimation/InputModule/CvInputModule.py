@@ -12,6 +12,7 @@ class CvInputModule(InputModule):
     def __init__(self, camera, mode, model):
         super.__init__(self, camera, model)
         self.mode_ = mode
+        self.nb_img_ = 0
 
     # Changes the mode from pointcloud to depth image to get the z coordinates
     def setupMode(self):
@@ -23,19 +24,20 @@ class CvInputModule(InputModule):
             print("mode not supported")
 
     # Handles the synchronized rgb and aligned depth topics
-    def readRGBDepthFrames(self, filename, save_skeleton = False):
+    def readRGBDepthFrames(self, filename, save_skeleton = False, save_images = False, folder_name = ""):
 
         if(os.path.isfile(filename + "_rgb.png") == True):
-            self.syncRGBDepthCallback(image_rgb = filename + "_rgb.png", image_depth = filename + "_depth.png", save_img= False)
+            self.syncRGBDepthCallback(image_rgb = filename + "_rgb.png", image_depth = filename + "_depth.png", save_img = save_images)
         else:
             num_img = len(fnmatch.filter(os.listdir(self.package_path + "/" + filename), '*.png'))
+            self.nb_img_ = int(num_img/2)
 
-            for img_index in range(int(num_img/2)):
+            for img_index in range(self.nb_img_):
                 name = filename + "/" + str(img_index)
-                self.syncRGBDepthCallback(image_rgb = name + "_rgb.png", image_depth = name + "_depth.png", save_img= False)
+                self.syncRGBDepthCallback(image_rgb = name + "_rgb.png", image_depth = name + "_depth.png", save_img = save_images)
 
-        if(save_skeleton == True):
-            self.save_skeletons(folder_name="skeletons", filename="skeletons_test")
+        # if(save_skeleton == True):
+        #     self.save_skeletons(folder_name="skeletons", filename="skeletons_test")
     
     def syncRGBDepthCallback(self, image_rgb, image_depth, save_img = False):
 

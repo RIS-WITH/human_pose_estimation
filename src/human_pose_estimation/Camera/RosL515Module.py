@@ -36,6 +36,9 @@ class RosL515Module():
         self.user_callback = callback
         self.setCameraParams()
 
+        self.min_distance_depth_ = 0.25
+        self.max_distance_depth_ = 9.0
+
         self.ts = message_filters.ApproximateTimeSynchronizer([self.sub_rgb, self.sub_aligned_depth], queue_size=1, slop=0.05)
         self.ts.registerCallback(self.syncRGBDepthCallback)
         
@@ -119,12 +122,13 @@ class RosL515Module():
     def save_image(self, frame_rgb, frame_depth, folder_name):
         r = rospkg.RosPack()
         package_path = r.get_path('human_pose_estimation')
+        saving_dir = "/data/recordings/"
 
-        if(os.path.isdir(package_path + "/" + folder_name + "/") == False):
-            creat_path = os.path.join(package_path, folder_name) 
+        if(os.path.isdir(package_path + saving_dir + folder_name + "/") == False):
+            creat_path = os.path.join(package_path + saving_dir, folder_name) 
             os.mkdir(creat_path) 
 
-        name = package_path + "/" + folder_name + "/" + str(self.cpt_)
+        name = package_path + saving_dir + folder_name + "/" + str(self.cpt_)
 
         cv2.imwrite(name + "_rgb.png", frame_rgb)
         cv2.imwrite(name + "_depth.png", frame_depth.astype(np.uint16))
@@ -136,10 +140,10 @@ class RosL515Module():
         frame_rgb = self.bridge.imgmsg_to_cv2(image_rgb, desired_encoding="bgr8")
         frame_depth = self.bridge.imgmsg_to_cv2(image_depth, desired_encoding="16UC1")
 
-        if(save_img == True):
-            self.save_image(frame_rgb, frame_depth)
+        # if(save_img == True):
+        #     self.save_image(frame_rgb, frame_depth, folder_name="guillaume_t_rex")
         
-        self.user_callback(frame_id, frame_rgb, frame_depth)
+        self.user_callback(frame_id, frame_rgb, frame_depth, self.cpt_img)
         self.cpt_img += 1
 
         
