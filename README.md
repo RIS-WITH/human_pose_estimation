@@ -27,7 +27,7 @@
     git checkout v0.16.2  
     python3 setup.py install --user  
 
-1.  wget https://nvidia.box.com/shared/static/ zostg6agm00fb6t5uisw51qi6kpcuwzd.whl -O onnxruntime_gpu-1.17.0-cp38-cp38-linux_aarch64.whl  
+1.  wget https://nvidia.box.com/shared/static/zostg6agm00fb6t5uisw51qi6kpcuwzd.whl -O onnxruntime_gpu-1.17.0-cp38-cp38-linux_aarch64.whl  
     pip install onnxruntime_gpu-1.17.0-cp38-cp38-linux_aarch64.whl  
 
 1. onnxruntime-gpu will automatically revert back the numpy version to latest. So we need to reinstall numpy to 1.23.5 to fix an issue by executing: pip install numpy==1.23.5  
