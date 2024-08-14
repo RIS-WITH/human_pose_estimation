@@ -3,24 +3,36 @@ import rospkg
 
 from human_pose_estimation.Skeleton.utils_human_pose import KeyPointIndexTableYolo, Skeleton2d, Keypoint2D 
 
+# import torch
+import os.path
+
 
 class Yolov8Module():
-    def __init__(self, model_name = "yolov8x-pose-p6", conf_thresh = 0.25 ):
+    def __init__(self, model_name = "yolov8x-pose-p6.pt", conf_thresh = 0.25 ):
         r = rospkg.RosPack()
         path = r.get_path('human_pose_estimation')
 
-        self.model = YOLO(model = path + "/models/yolo/" + model_name + ".pt", verbose=False)
+        extension = os.path.splitext(model_name)[1]
+
+        if(extension == ".pt"):
+            self.model = YOLO(model = path + "/models/yolo/" + model_name + ".pt", verbose=False)
+        elif(extension == ".engine"):
+            if(not os.path.isfile(path + "/models/yolo/" + model_name + ".engine")):
+                self.model.export(format="engine")
+            self.model = YOLO(model = path + "/models/yolo/" + model_name + ".engine", verbose=False)
+
         self.kp_table = KeyPointIndexTableYolo()
         self.conf_thresh_ = conf_thresh
 
     def predictDetections(self, image_rgb, frame_id):
         
-        detections = self.model.predict(image_rgb, conf = self.conf_thresh_, show = False)
+        skeletons_2d = []
         dim_rgb = image_rgb.shape
 
-        skeletons_2d = []
-
-        # we have to take the first element for no reason
+        # The model.predict function is the actual bottleneck (from 60Hz to 12 Hz)
+        detections = self.model.predict(image_rgb, conf = self.conf_thresh_, show = False)
+        
+        # # we have to take the first element for no reason
         kp_n = detections[0].keypoints.xyn
         conf_n = detections[0].keypoints.conf
 

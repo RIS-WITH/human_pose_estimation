@@ -1,12 +1,15 @@
 # human_pose_estimation
 
-## Install on ROS-Noetic
+## Install package
 
 1. git clone branch dev  
 2. pip install requirements.txt
-3. (optional) if you have the models on your machine, copy them into the models folder, else they will be downloaded through ultralytics upon launch
+3. (optional) if you have the models on your machine, copy them into the models folder, else they will be downloaded via ultralytics upon launch
 
-## Install on Jetson ORIN with Python 3.8 (JetPack 5.x)
+## Install Ultralytics on ROS-Noetic machines (Not Jetson)
+1. pip install ultralytics
+
+## Install Ultralytics on Jetson ORIN with Python 3.8 (JetPack 5.x)
 
 1.  sudo apt update  
     sudo apt install python3-pip -y  
@@ -27,7 +30,14 @@
 1.  wget https://nvidia.box.com/shared/static/ zostg6agm00fb6t5uisw51qi6kpcuwzd.whl -O onnxruntime_gpu-1.17.0-cp38-cp38-linux_aarch64.whl  
     pip install onnxruntime_gpu-1.17.0-cp38-cp38-linux_aarch64.whl  
 
+1. onnxruntime-gpu will automatically revert back the numpy version to latest. So we need to reinstall numpy to 1.23.5 to fix an issue by executing: pip install numpy==1.23.5  
+
 ## Launch
 
 1. roslaunch human_pose_estimation rs_d435i.launch
 2. roslaunch human_pose_estimation human_pose_estimation.launch
+
+# Changing the model
+
+In yolo_ros.py or yolo_cv.py, you can replace the model with one you would like between (yolo8x-pose.pt and yolox-pose-p6.pt).  
+If you wish to use the .engine models (yolo8x-pose.engine and yolox-pose-p6.engine), you need to ensure that the Jetson specific installation process has been applied.

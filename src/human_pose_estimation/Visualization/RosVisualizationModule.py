@@ -13,6 +13,7 @@ from geometry_msgs.msg import Point, Quaternion, Vector3
 
 class RosVisualizationModule():
     def __init__(self, kp_table):
+        self.pub_kp2d = rospy.Publisher('/2d_keypoints', MarkerArray, queue_size=1)
         self.pub_2dkp = rospy.Publisher('/rgb_w_keypoints', Image, queue_size=1)
         self.pub_3dkp = rospy.Publisher('/3d_keypoints', MarkerArray, queue_size=1)
         self.pub_2d_skeletons = rospy.Publisher('/rgb_w_skeletons', Image, queue_size=1)
@@ -21,7 +22,38 @@ class RosVisualizationModule():
 
         self.bridge = CvBridge()
         self.kp_table_ = kp_table
-    
+
+    def publishDetectedKeypoints(self, skeleton2d):
+
+        marker_array = MarkerArray()
+
+        for skeleton in skeleton2d:
+            r,g,b = np.random.random(), np.random.random(), np.random.random()
+
+            marker = Marker()
+            marker.header.frame_id = str(skeleton.frame_id_) #"camera_color_optical_frame"
+            marker.id = int(skeleton.skeleton_id_)
+
+            marker.type = Marker.POINTS
+            marker.action = Marker.MODIFY
+
+            marker.color = ColorRGBA(r, g, b, 1.0)
+            marker.scale = Vector3(0.02, 0.02, 0.02)
+            marker.pose.position = Point(0,0,0)
+            marker.pose.orientation = Quaternion(0,0,0,1)
+
+            for i in range(0, len(skeleton.keypoints)):
+                kp = skeleton.keypoints[i]
+                if(kp.x_ == 0 and kp.y_ == 0):
+                    continue
+                else:
+                    point = Point(kp.x_, kp.y_, 0)
+                    marker.points.append(point)
+
+            marker_array.markers.append(marker)
+
+        self.pub_kp2d.publish(marker_array)
+
     def publishKeypoint2D(self, image_rgb, skeletons, step = 2):
         frame_rgb = image_rgb.copy()
         dim_rgb = image_rgb.shape
@@ -51,13 +83,13 @@ class RosVisualizationModule():
         marker_array = MarkerArray()
 
         for skeleton in skeletons3d:
-
+            #print(skeleton)
             #r,g,b = 1,1,1
             r,g,b = np.random.random(), np.random.random(), np.random.random()
 
             marker = Marker()
-            marker.header.frame_id = str(skeleton.frame_id_) #"camera_color_optical_frame"
-            marker.id = int(skeleton.skeleton_id_)
+            marker.header.frame_id = str(skeleton[0].frame_id_) #"camera_color_optical_frame"
+            marker.id = int(skeleton[0].skeleton_id_)
 
             marker.type = Marker.POINTS
             marker.action = Marker.MODIFY
@@ -67,8 +99,8 @@ class RosVisualizationModule():
             marker.pose.position = Point(0,0,0)
             marker.pose.orientation = Quaternion(0,0,0,1)
 
-            for i in range(0, len(skeleton.keypoints)):
-                kp = skeleton.keypoints[i]
+            for i in range(0, len(skeleton[0].keypoints)):
+                kp = skeleton[0].keypoints[i]
                 if(kp.x_ == 0 and kp.y_ == 0 and kp.z_ == 0):
                     continue
                 else:
